@@ -63,6 +63,8 @@ function TimelineComponent() {
   const handleDayButtonClick = () => {
     setView('day');
   };
+  
+ 
 
   const timelineRef = React.createRef();
 
@@ -81,11 +83,11 @@ function TimelineComponent() {
         ref={timelineRef}
         groups={groups}
         items={items}
-        defaultTimeStart={moment().add(-12, 'hour')}
-        defaultTimeEnd={moment().add(12, 'hour')}
+        defaultTimeStart={currentDate.clone().startOf(view)}
+        defaultTimeEnd={currentDate.clone().endOf(view)}
         visibleTimeStart={currentDate.clone().startOf(view)}
         visibleTimeEnd={currentDate.clone().endOf(view)}
-        minZoom={60 * 60 * 1000} // Minimum zoom level is 1 hour
+        minZoom={60 * 60 * 1000} 
       />
     </Container>
   );
