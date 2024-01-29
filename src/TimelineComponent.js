@@ -63,33 +63,43 @@ function TimelineComponent() {
   const handleDayButtonClick = () => {
     setView('day');
   };
-  
- 
+
+
 
   const timelineRef = React.createRef();
 
   return (
-    <Container>
-      <ButtonGroup>
-        <Button onClick={handleMonthButtonClick}>Month</Button>
-        <Button onClick={handleWeekButtonClick}>Week</Button>
-        <Button onClick={handleDayButtonClick}>Day</Button>
-      </ButtonGroup>
-      <Button onClick={handleTodayButtonClick}>Today</Button>
-      <Button onClick={handlePreviousButtonClick}>Previous</Button>
-      <Button onClick={handleNextButtonClick}>Next</Button>
+    <div>
+      <div className='row'>
+        <div className='col-md-6'>
+          <Button onClick={handleTodayButtonClick}>Today</Button>
+          <Button onClick={handlePreviousButtonClick}>Previous</Button>
+          <Button onClick={handleNextButtonClick}>Next</Button>
+        </div>
+        <div className='col-md-6'>
+          <ButtonGroup>
+            <Button onClick={handleMonthButtonClick}>Month</Button>
+            <Button onClick={handleWeekButtonClick}>Week</Button>
+            <Button onClick={handleDayButtonClick}>Day</Button>
+          </ButtonGroup>
+        </div>
+      </div>
+      <Container>
+        <Timeline
+          ref={timelineRef}
+          groups={groups}
+          items={items}
+          defaultTimeStart={currentDate.clone().startOf(view)}
+          defaultTimeEnd={currentDate.clone().endOf(view)}
+          visibleTimeStart={currentDate.clone().startOf(view)}
+          visibleTimeEnd={currentDate.clone().endOf(view)}
+          minZoom={60 * 60 * 1000}
+        />
+      </Container>
 
-      <Timeline
-        ref={timelineRef}
-        groups={groups}
-        items={items}
-        defaultTimeStart={currentDate.clone().startOf(view)}
-        defaultTimeEnd={currentDate.clone().endOf(view)}
-        visibleTimeStart={currentDate.clone().startOf(view)}
-        visibleTimeEnd={currentDate.clone().endOf(view)}
-        minZoom={60 * 60 * 1000} 
-      />
-    </Container>
+
+    </div>
+
   );
 }
 
