@@ -1,103 +1,106 @@
 import React, { useState } from 'react';
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
-import { Button, Grid } from '@mui/material';
-import data from './users.json';
+import moment from 'moment';
+import { Button, ButtonGroup, Container } from '@mui/material';
 
-const MyTimelineChart = () => {
-  const [items, setItems] = useState(data.items);
-  const [groups, setGroups] = useState(data.groups);
-  const [view, setView] = useState('month');
+const groups = [
+  { id: 1, title: 'layers' },
+  { id: 2, title: 'layer 1' },
+  { id: 3, title: 'layer 2' },
+  { id: 4, title: 'override layer' },
+  { id: 5, title: 'Final Schedule' },
+];
 
-  const handleTodayClick = () => {
-    const currentDate = new Date();
-    switch (view) {
-      case 'month':
-        // Logic to show the current month view
-        setItems(data.items); // Reset items to the original data for month view
-        break;
-      case 'week':
-        // Logic to show the current week view
-        // Modify items and groups based on the selected week view
-        break;
-      case 'day':
-        // Logic to show the current day view
-        // Modify items and groups based on the selected day view
-        break;
-      default:
-        break;
-    }
+const items = [
+  {
+    id: 1,
+    group: 1,
+    title: 'item 1',
+    start_time: moment(),
+    end_time: moment().add(1, 'hour'),
+  },
+  {
+    id: 2,
+    group: 2,
+    title: 'item 2',
+    start_time: moment().add(-0.5, 'hour'),
+    end_time: moment().add(0.5, 'hour'),
+  },
+  {
+    id: 3,
+    group: 1,
+    title: 'item 3',
+    start_time: moment().add(2, 'hour'),
+    end_time: moment().add(3, 'hour'),
+  },
+];
+
+function TimelineComponent() {
+  const [currentDate, setCurrentDate] = useState(moment());
+  const [view, setView] = useState('day');
+
+  const handleNextButtonClick = () => {
+    setCurrentDate((prevDate) => prevDate.clone().add(1, view));
   };
 
-  const handleNextClick = () => {
-    // Logic to move to the next period based on the current view
+  const handlePreviousButtonClick = () => {
+    setCurrentDate((prevDate) => prevDate.clone().subtract(1, view));
   };
 
-  const handlePrevClick = () => {
-    // Logic to move to the previous period based on the current view
+  const handleTodayButtonClick = () => {
+    setCurrentDate(moment());
   };
 
-  const handleViewChange = (newView) => {
-    setView(newView);
-    // Update timeline properties based on the selected view
-    switch (newView) {
-      case 'month':
-        // Update timeline properties for month view
-        break;
-      case 'week':
-        // Update timeline properties for week view
-        break;
-      case 'day':
-        // Update timeline properties for day view
-        break;
-      default:
-        break;
-    }
+  const handleMonthButtonClick = () => {
+    setView('month');
   };
+
+  const handleWeekButtonClick = () => {
+    setView('week');
+  };
+
+  const handleDayButtonClick = () => {
+    setView('day');
+  };
+
+
+
+  const timelineRef = React.createRef();
 
   return (
     <div>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item>
-          <Button onClick={() => handleViewChange('month')}>Month</Button>
-        </Grid>
-        <Grid item>
-          <Button onClick={() => handleViewChange('week')}>2-Week</Button>
-        </Grid>
-        <Grid item>
-          <Button onClick={() => handleViewChange('week')}>1-Week</Button>
-        </Grid>
-        <Grid item>
-          <Button onClick={() => handleViewChange('day')}>2-Day</Button>
-        </Grid>
-        <Grid item>
-          <Button onClick={() => handleViewChange('day')}>1-Day</Button>
-        </Grid>
-        <Grid item>
-          <Button onClick={handlePrevClick}>Previous</Button>
-        </Grid>
-        <Grid item>
-          <Button onClick={handleTodayClick}>Today</Button>
-        </Grid>
-        <Grid item>
-          <Button onClick={handleNextClick}>Next</Button>
-        </Grid>
-      </Grid>
+      <div className='row'>
+        <div className='col-md-6'>
+          <Button onClick={handleTodayButtonClick}>Today</Button>
+          <Button onClick={handlePreviousButtonClick}>Previous</Button>
+          <Button onClick={handleNextButtonClick}>Next</Button>
+        </div>
+        <div className='col-md-6'>
+          <ButtonGroup>
+            <Button onClick={handleMonthButtonClick}>Month</Button>
+            <Button onClick={handleWeekButtonClick}>Week</Button>
+            <Button onClick={handleDayButtonClick}>Day</Button>
+          </ButtonGroup>
+        </div>
+      </div>
+      <Container>
+        <Timeline
+          ref={timelineRef}
+          groups={groups}
+          items={items}
+          defaultTimeStart={currentDate.clone().startOf(view)}
+          defaultTimeEnd={currentDate.clone().endOf(view)}
+          visibleTimeStart={currentDate.clone().startOf(view)}
+          visibleTimeEnd={currentDate.clone().endOf(view)}
+          minZoom={60 * 60 * 1000}
+        />
+      </Container>
 
-      <Timeline
-        groups={groups}
-        items={items}
-        defaultTimeStart={new Date()}
-        defaultTimeEnd={new Date().setFullYear(new Date().getFullYear() + 1)}
-        visibleTimeStart={new Date()}
-        visibleTimeEnd={new Date().setMonth(new Date().getMonth() + 1)}
-        minZoom={60 * 60 * 1000}
-        maxZoom={5 * 365.24 * 86400 * 1000}
-        sidebarWidth={150}
-        itemHeightRatio={0.75}
-      />
+
     </div>
-  );
-};
 
-export default MyTimelineChart;
+  );
+}
+
+export default TimelineComponent;
